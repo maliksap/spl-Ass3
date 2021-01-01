@@ -1,65 +1,112 @@
 package bgu.spl.net.impl.echo;
 
+import bgu.spl.net.*;
 import bgu.spl.net.api.MessageEncoderDecoder;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 
-public class OpMessageEncoderDecoder implements MessageEncoderDecoder<String> {
+public class OpMessageEncoderDecoder implements MessageEncoderDecoder<OPMessageClass> {
 
     private byte[] bytes = new byte[1 << 10]; //start with 1k
     private int len = 0;
     private int opCounter=0;
     private int userInfoCounter=0;
-    private HashMap<String,String> messageContent=new HashMap<String, String>();; //we added
+    private HashMap<String,String> info =new HashMap<String, String>();; //we added
 
     @Override
-    public HashMap<String,String> decodeNextByte(byte nextByte) {
+    public OPMessageClass decodeNextByte(byte nextByte) {
         //notice that the top 128 ascii characters have the same representation as their utf-8 counterparts
         //this allow us to do the following comparison
 
         if (opCounter==2)
         {
-            messageContent.putIfAbsent("op",popString());
+            info.putIfAbsent("op",popString());
         }
 
-        else if (opCounter > 2 && (messageContent.get("op").equals("1") || messageContent.get("op").equals("2") || messageContent.get("op").equals("3")))
+        else if (opCounter > 2 && (Integer.parseInt(info.get("op")))<4)
         {
+            OPMessageClass ans;
             if (nextByte == '0' && userInfoCounter==0) {
-                messageContent.putIfAbsent("userName",popString());
+                info.putIfAbsent("userName",popString());
                 userInfoCounter++;
             }
             else if(nextByte == '0'&& userInfoCounter==1){
-                messageContent.putIfAbsent("password",popString());
-                return messageContent;
-        }
+                info.putIfAbsent("password",popString());
+                switch (info.get("op")) {
+                    case "1":
+                        ans = new OP1AdminRegMessage(Integer.parseInt(info.get("op")), info.get("userName"), info.get("password"));
+                        break;
+                    case "2":
+                        ans = new OP2StudentRegMessage(Integer.parseInt(info.get("op")), info.get("userName"), info.get("password"));
+                        break;
+                    default:
+                        ans = new OP3LoginRequestMessage(Integer.parseInt(info.get("op")), info.get("userName"), info.get("password"));
+                        break;
+                }
+                userInfoCounter = 0;
+                info.clear();
+                return ans;
             }
-        else if(opCounter > 2 && (messageContent.get("op").equals("5") || messageContent.get("op").equals("6") || messageContent.get("op").equals("7"))|| messageContent.get("op").equals("9") || messageContent.get("op").equals("10")){
-            if (len==2) {
-                messageContent.putIfAbsent("courseNumber", popString());
-                return messageContent;
-            }
         }
-        else if (opCounter > 2 && (messageContent.get("op").equals("8"))) {
+
+        else if (opCounter > 2 && (info.get("op").equals("8"))) {
+            OPMessageClass ans;
             if (nextByte == '0') {
-                messageContent.putIfAbsent("studentUsername", popString());
-                return messageContent;
+                info.putIfAbsent("studentUsername", popString());
+                ans = new OP8PrintStudStatMessage(Integer.parseInt(info.get("op")), info.get("studentUsername"));
+                info.clear();
+                return ans;
+            }
+        }
+        else if(opCounter > 2 && (Integer.parseInt(info.get("op"))>4 && Integer.parseInt(info.get("op"))<=10)){
+            OPMessageClass ans;
+            if (len==2) {
+                info.putIfAbsent("courseNumber", popString());
+                switch (info.get("op")) {
+                    case "5":
+                        ans = new OP5RegToCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
+                        break;
+                    case "6":
+                        ans = new OP6CheckKdamCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
+                        break;
+                    case "7":
+                        ans = new OP7PrintCourseStatMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
+                        break;
+                    case "9":
+                        ans = new OP9CheckIfRegMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
+                        break;
+                    default:
+                        ans = new OP10UnregCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
+                        break;
+                }
+                info.clear();
+                return ans;
             }
         }
         else if (opCounter>2){
-            return messageContent;
+            OPMessageClass ans;
+            if (info.get("op").equals("4")) {
+                ans = new OP4LogoutMessage(Integer.parseInt(info.get("op")));
+            }
+            else  {
+                ans = new OP11CheckMyCurrCoursesMessage(Integer.parseInt(info.get("op")));
+            }
+            info.clear();
+            return ans;
         }
+
+        pushByte(nextByte);
+        return null; //not a line yet
 
 //        if (nextByte == '\n') {
 //            return popString();
 //        }
-        pushByte(nextByte);
-        return null; //not a line yet
     }
 
     @Override
-    public byte[] encode(String message) {
-        return (message + "\n").getBytes(); //uses utf8 by default
+    public byte[] encode(OPMessageClass message) {
+        return (message.toString() + "\n").getBytes(); //uses utf8 by default
     }
 
     private void pushByte(byte nextByte) {
