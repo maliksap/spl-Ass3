@@ -15,19 +15,19 @@ public class OP9CheckIfRegMessage implements OPMessage {
         this.loggedInUser = s;
         Database database = Database.getInstance();
         if (loggedInUser == null) {
-            return new OP13ErrMessage(13, 9);
+            return new OP13ErrMessage(13, (short) 9);
         }
         if (database.getUsersInfo().get(loggedInUser).isAdmin()){
-            return new OP13ErrMessage(13, 9);
+            return new OP13ErrMessage(13, (short) 9);
         }
         if (!(database.getCoursesInfo().containsKey(courseNum))){
-            return new OP13ErrMessage(13, 9);
+            return new OP13ErrMessage(13, (short) 9);
         }
         String reg = "NOT REGISTERED";
         if (database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum)){
             reg = "REGISTERED";
         }
-        return new OP12AckMessage(12,9,reg);
+        return new OP12AckMessage(12, (short) 9,reg);
     }
 
     @Override

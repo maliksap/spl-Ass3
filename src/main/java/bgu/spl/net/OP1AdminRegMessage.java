@@ -18,11 +18,11 @@ public class OP1AdminRegMessage implements OPMessage {
         Database database = Database.getInstance();
         synchronized (database.getUsersInfo()) {
             if (database.getUsersInfo().containsKey(username)) {
-                return new OP13ErrMessage(13, 1);
+                return new OP13ErrMessage(13, (short) 1);
             }
             database.getUsersInfo().put(username, new User(password, true));
         }
-            return new OP12AckMessage(12, 1, "");
+            return new OP12AckMessage(12, (short) 1, "");
     }
 
     @Override

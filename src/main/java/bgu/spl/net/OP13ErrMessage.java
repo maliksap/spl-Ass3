@@ -2,10 +2,10 @@ package bgu.spl.net;
 
 public class OP13ErrMessage implements OPMessage {
     private int opcode;
-    private int otherOp;
+    private short otherOp;
     private String loggedInUser;
 
-    public OP13ErrMessage(int opCode, int otherOp) {
+    public OP13ErrMessage(int opCode, short otherOp) {
         this.opcode=opCode;
         this.otherOp=otherOp;
         this.loggedInUser=null;

@@ -18,11 +18,11 @@ public class OP2StudentRegMessage implements OPMessage {
         Database database = Database.getInstance();
         synchronized (database.getUsersInfo()) {
             if (database.getUsersInfo().containsKey(username)) {
-                return new OP13ErrMessage(13, 2);
+                return new OP13ErrMessage(13, (short) 2);
             }
             database.getUsersInfo().put(username, new User(password, false));
         }
-            return new OP12AckMessage(12, 2, "");
+            return new OP12AckMessage(12, (short) 2, "");
     }
 
     @Override

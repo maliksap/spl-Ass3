@@ -15,26 +15,26 @@ public class OP10UnregCourseMessage implements OPMessage {
         this.loggedInUser = s;
         Database database = Database.getInstance();
         if (loggedInUser == null) {
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         if (database.getUsersInfo().get(loggedInUser).isAdmin()){
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         if (!(database.getCoursesInfo().containsKey(courseNum))) {
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         if(!(database.getCoursesInfo().get(courseNum).getStudsReg().contains(loggedInUser))){
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         if(!(database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum))){
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
             database.getUsersInfo().get(loggedInUser).getRegisteredCourses().remove(courseNum);
             database.getCoursesInfo().get(courseNum).getStudsReg().remove(loggedInUser);
             database.getCoursesInfo().get(courseNum).unRegStudent();
         }
-        return new OP12AckMessage(12,10,"");
+        return new OP12AckMessage(12, (short) 10,"");
     }
 
     @Override

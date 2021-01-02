@@ -16,14 +16,14 @@ public class OP11CheckMyCurrCoursesMessage implements OPMessage {
         this.loggedInUser = s;
         Database database = Database.getInstance();
         if (loggedInUser == null) {
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         if (database.getUsersInfo().get(loggedInUser).isAdmin()){
-            return new OP13ErrMessage(13, 10);
+            return new OP13ErrMessage(13, (short) 10);
         }
         User u = database.getUsersInfo().get(loggedInUser);
         String myCourses = Arrays.toString(u.getRegisteredCourses().toArray());
-        return new OP12AckMessage(12,11,myCourses);
+        return new OP12AckMessage(12, (short) 11,myCourses);
     }
 
     @Override

@@ -18,13 +18,13 @@ public class OP6CheckKdamCourseMessage implements OPMessage {
         this.loggedInUser = s;
         Database database = Database.getInstance();
         if (loggedInUser == null) {
-            return new OP13ErrMessage(13, 6);
+            return new OP13ErrMessage(13, (short) 6);
         }
         if (database.getCoursesInfo().containsKey(courseNum)){
-            return new OP13ErrMessage(13, 6);
+            return new OP13ErrMessage(13, (short) 6);
         }
         String kdamCurses = Arrays.toString(database.getCoursesInfo().get(courseNum).getKdamCourses().toArray());
-        return new OP12AckMessage(12,6,kdamCurses);
+        return new OP12AckMessage(12, (short) 6,kdamCurses);
     }
 
     @Override

@@ -21,7 +21,7 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
 
         if (opCounter==2)
         {
-            info.putIfAbsent("op",popString());
+            info.putIfAbsent("op",bytesToShort(bytes));
         }
 
         else if (opCounter > 2 && (Integer.parseInt(info.get("op")))<4)
@@ -62,7 +62,7 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
         else if(opCounter > 2 && (Integer.parseInt(info.get("op"))>4 && Integer.parseInt(info.get("op"))<=10)){
             OPMessage ans;
             if (len==2) {
-                info.putIfAbsent("courseNumber", popString());
+                info.putIfAbsent("courseNumber", bytesToShort(bytes));
                 switch (info.get("op")) {
                     case "5":
                         ans = new OP5RegToCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
@@ -124,5 +124,14 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
         String result = new String(bytes, 0, len, StandardCharsets.UTF_8);
         len = 0;
         return result;
+    }
+
+    public String bytesToShort(byte[] byteArr)
+    {
+        short result = (short)((byteArr[0] & 0xff) << 8);
+        result += (short)(byteArr[1] & 0xff);
+        len = 0;
+        String s=""+result;
+        return s;
     }
 }

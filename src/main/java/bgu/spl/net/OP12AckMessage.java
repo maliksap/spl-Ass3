@@ -3,9 +3,9 @@ package bgu.spl.net;
 public class OP12AckMessage implements OPMessage {
     private int opcode;
     private String optional;
-    private int otherOp;
+    private short otherOp;
     private String loggedInUser;
-    public OP12AckMessage(int opCode, int otherOp, String optional ) {
+    public OP12AckMessage(int opCode, short otherOp, String optional ) {
         this.opcode=opCode;
         this.otherOp=otherOp;
         this.optional=optional;
