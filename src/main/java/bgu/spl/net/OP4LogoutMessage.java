@@ -16,10 +16,10 @@ public class OP4LogoutMessage implements OPMessage {
         if (loggedInUser == null) {
             return new OP13ErrMessage(13, 4);
         }
-        synchronized (database.getUsersInfo().get(loggedInUser)) {
+        synchronized (database.getUsersInfo().get(loggedInUser).isLoggedIn()) {
             database.getUsersInfo().get(loggedInUser).logOut();
-            return new OP12AckMessage(12, 4, "");
         }
+        return new OP12AckMessage(12, 4, "");
     }
 
     @Override

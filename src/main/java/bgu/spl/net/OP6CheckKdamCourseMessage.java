@@ -24,7 +24,6 @@ public class OP6CheckKdamCourseMessage implements OPMessage {
             return new OP13ErrMessage(13, 6);
         }
         String kdamCurses = Arrays.toString(database.getCoursesInfo().get(courseNum).getKdamCourses().toArray());
-
         return new OP12AckMessage(12,6,kdamCurses);
     }
 

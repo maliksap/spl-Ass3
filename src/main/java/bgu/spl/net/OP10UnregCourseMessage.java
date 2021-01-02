@@ -29,10 +29,11 @@ public class OP10UnregCourseMessage implements OPMessage {
         if(!(database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum))){
             return new OP13ErrMessage(13, 10);
         }
-        database.getUsersInfo().get(loggedInUser).getRegisteredCourses().remove(courseNum);
-        database.getCoursesInfo().get(courseNum).getStudsReg().remove(loggedInUser);
-        database.getCoursesInfo().get(courseNum).unRegStudent();
-
+        synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
+            database.getUsersInfo().get(loggedInUser).getRegisteredCourses().remove(courseNum);
+            database.getCoursesInfo().get(courseNum).getStudsReg().remove(loggedInUser);
+            database.getCoursesInfo().get(courseNum).unRegStudent();
+        }
         return new OP12AckMessage(12,10,"");
     }
 

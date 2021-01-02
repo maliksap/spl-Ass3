@@ -20,20 +20,21 @@ public class OP3LoginRequestMessage implements OPMessage {
         if (!(database.getUsersInfo().containsKey(username))) {
             return new OP13ErrMessage(13, 3);
         }
-        synchronized (database.getUsersInfo().get(username)) {
-            if (!(database.getUsersInfo().get(username).getPassword().equals(password))) {
-                return new OP13ErrMessage(13, 3);
-            }
+        if (!(database.getUsersInfo().get(username).getPassword().equals(password))) {
+            return new OP13ErrMessage(13, 3);
+        }
+        if (!(this.loggedInUser == null)) {
+            return new OP13ErrMessage(13, 3);
+        }
+        synchronized (database.getUsersInfo().get(username).isLoggedIn()) {
             if (database.getUsersInfo().get(username).isLoggedIn()) {
                 return new OP13ErrMessage(13, 3);
             }
-            if (!(this.loggedInUser == null)) {
-                return new OP13ErrMessage(13, 3);
-            }
             database.getUsersInfo().get(username).logIn();
-            this.loggedInUser = username;
-            return new OP12AckMessage(12, 3, "");
         }
+        this.loggedInUser = username;
+        return new OP12AckMessage(12, 3, "");
+
     }
 
 

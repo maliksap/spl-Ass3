@@ -1,18 +1,19 @@
 package bgu.spl.net;
 
 import java.util.LinkedList;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class User {
     private String password;
     private boolean admin;
-    private boolean loggedIn;
-    private LinkedList<Integer> registeredCourses;
+    private Boolean loggedIn;
+    private ConcurrentLinkedQueue<Integer> registeredCourses;
 
     public User(String password, boolean admin) {
         this.password = password;
         this.admin = admin;
         this.loggedIn = false;
-        this.registeredCourses=new LinkedList<>();
+        this.registeredCourses=new ConcurrentLinkedQueue<>();
     }
 
     public String getPassword() {
@@ -23,7 +24,7 @@ public class User {
         return admin;
     }
 
-    public boolean isLoggedIn() {
+    public Boolean isLoggedIn() {
         return loggedIn;
     }
 
@@ -35,7 +36,7 @@ public class User {
         this.loggedIn = false;
     }
 
-    public LinkedList<Integer> getRegisteredCourses() {
+    public ConcurrentLinkedQueue<Integer> getRegisteredCourses() {
         return registeredCourses;
     }
 

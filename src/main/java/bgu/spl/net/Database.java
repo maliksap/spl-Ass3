@@ -5,6 +5,7 @@ import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentLinkedQueue;
 
 /**
  * Passive object representing the bgu.spl.net.Database where all courses and users are stored.
@@ -49,7 +50,7 @@ public class Database {
 				String[] courseMembers=courseData.split("|");
 				String [] kdamArray=courseMembers[2].substring(1,(courseMembers[2].length()-1)).split(",");
 				LinkedList<Integer> kdamList=new LinkedList<>();
-				LinkedList<String> studsReg =new LinkedList<>();
+				ConcurrentLinkedQueue<String> studsReg =new ConcurrentLinkedQueue<>();
 				for (int i = 0; i < kdamArray.length; i++) {
 					kdamList.add(Integer.parseInt(kdamArray[i]));
 				}

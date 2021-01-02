@@ -21,8 +21,8 @@ public class OP2StudentRegMessage implements OPMessage {
                 return new OP13ErrMessage(13, 2);
             }
             database.getUsersInfo().put(username, new User(password, false));
-            return new OP12AckMessage(12, 2, "");
         }
+            return new OP12AckMessage(12, 2, "");
     }
 
     @Override

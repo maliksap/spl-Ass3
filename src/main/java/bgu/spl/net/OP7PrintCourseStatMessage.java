@@ -25,12 +25,14 @@ public class OP7PrintCourseStatMessage implements OPMessage {
         if (!(database.getCoursesInfo().containsKey(courseNum))){
             return new OP13ErrMessage(13, 7);
         }
-        Course c = database.getCoursesInfo().get(courseNum);
-        String studReg = Arrays.toString(c.getStudsReg().toArray());
-        String stat = "Course:("+courseNum+")"+c.getCourseName()+"\n"
-                +"Seats Available:"+c.getCurrStudents()+"/"
-                +c.getMaxStudents() + "\n" +"Student Registered:"+studReg;
-        return new OP12AckMessage(12,7,stat);
+        synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
+            Course c = database.getCoursesInfo().get(courseNum);
+            String studReg = Arrays.toString(c.getStudsReg().toArray());
+            String stat = "Course:(" + courseNum + ")" + c.getCourseName() + "\n"
+                    + "Seats Available:" + c.getCurrStudents() + "/"
+                    + c.getMaxStudents() + "\n" + "Student Registered:" + studReg;
+            return new OP12AckMessage(12, 7, stat);
+        }
     }
 
     @Override
