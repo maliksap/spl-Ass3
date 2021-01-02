@@ -1,11 +1,48 @@
 package bgu.spl.net;
 
-public class OP3LoginRequestMessage extends OPMessageClass {
+public class OP3LoginRequestMessage implements OPMessage {
+    private int opcode;
     private String username;
     private String password;
+    private String loggedInUser;
     public OP3LoginRequestMessage(int opCode, String username, String password) {
-        super(opCode);
+       this.opcode=opCode;
         this.username=username;
         this.password = password;
+        this.loggedInUser = null;
+    }
+
+
+    @Override
+    public OPMessage react(String s) {
+        this.loggedInUser = s;
+        Database database = Database.getInstance();
+        if (!(database.getUsersInfo().containsKey(username))) {
+            return new OP13ErrMessage(13, 3);
+        }
+        synchronized (database.getUsersInfo().get(username)) {
+            if (!(database.getUsersInfo().get(username).getPassword().equals(password))) {
+                return new OP13ErrMessage(13, 3);
+            }
+            if (database.getUsersInfo().get(username).isLoggedIn()) {
+                return new OP13ErrMessage(13, 3);
+            }
+            if (!(this.loggedInUser == null)) {
+                return new OP13ErrMessage(13, 3);
+            }
+            database.getUsersInfo().get(username).logIn();
+            this.loggedInUser = username;
+            return new OP12AckMessage(12, 3, "");
+        }
+    }
+
+
+    @Override
+    public int getOpCode() {
+        return opcode;
+    }
+
+    public String getLoggedInUser() {
+        return loggedInUser;
     }
 }

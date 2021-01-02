@@ -1,3 +1,5 @@
+package bgu.spl.net;
+
 import java.util.LinkedList;
 
 public class User {
@@ -32,4 +34,9 @@ public class User {
     public void logOut() {
         this.loggedIn = false;
     }
+
+    public LinkedList<Integer> getRegisteredCourses() {
+        return registeredCourses;
+    }
+
 }

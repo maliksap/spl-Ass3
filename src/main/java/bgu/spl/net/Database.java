@@ -1,13 +1,13 @@
+package bgu.spl.net;
+
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.List;
 import java.util.Scanner;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * Passive object representing the Database where all courses and users are stored.
+ * Passive object representing the bgu.spl.net.Database where all courses and users are stored.
  * <p>
  * This class must be implemented safely as a thread-safe singleton.
  * You must not alter any of the given public methods of this class.
@@ -18,7 +18,7 @@ public class Database {
 	private ConcurrentHashMap<String, User> usersInfo;
 	private ConcurrentHashMap<Integer,Course> coursesInfo;
 
-	//to prevent user from creating new Database
+	//to prevent user from creating new bgu.spl.net.Database
 	private Database() {
 		this.usersInfo=new ConcurrentHashMap<>();
 		this.coursesInfo=new ConcurrentHashMap<>();
@@ -38,7 +38,7 @@ public class Database {
 	
 	/**
 	 * loades the courses from the file path specified 
-	 * into the Database, returns true if successful.
+	 * into the bgu.spl.net.Database, returns true if successful.
 	 */
 	boolean initialize(String coursesFilePath) {
 		try {
@@ -49,10 +49,11 @@ public class Database {
 				String[] courseMembers=courseData.split("|");
 				String [] kdamArray=courseMembers[2].substring(1,(courseMembers[2].length()-1)).split(",");
 				LinkedList<Integer> kdamList=new LinkedList<>();
+				LinkedList<String> studsReg =new LinkedList<>();
 				for (int i = 0; i < kdamArray.length; i++) {
 					kdamList.add(Integer.parseInt(kdamArray[i]));
 				}
-				Course c=new Course(courseMembers[1],Integer.parseInt(courseMembers[3]),kdamList);
+				Course c=new Course(courseMembers[1],Integer.parseInt(courseMembers[3]),kdamList,studsReg);
 				coursesInfo.putIfAbsent(Integer.parseInt(courseMembers[0]),c);
 			}
 			myReader.close();
@@ -64,5 +65,12 @@ public class Database {
 		return false;
 	}
 
+	public ConcurrentHashMap<String, User> getUsersInfo() {
+		return usersInfo;
+	}
+
+	public ConcurrentHashMap<Integer, Course> getCoursesInfo() {
+		return coursesInfo;
+	}
 
 }

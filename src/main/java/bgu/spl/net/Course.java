@@ -1,3 +1,5 @@
+package bgu.spl.net;
+
 import java.util.LinkedList;
 
 public class Course {
@@ -5,13 +7,15 @@ public class Course {
     private int maxStudents;
     private int currStudents;
     private LinkedList<Integer> kdamCourses;
+    private LinkedList<String> studsReg;
 
-    public Course (String courseName, int maxStudents,LinkedList<Integer> kdamCourses )
+    public Course (String courseName, int maxStudents,LinkedList<Integer> kdamCourses, LinkedList<String> studsReg )
     {
         this.courseName=courseName;
         this.maxStudents=maxStudents;
         this.currStudents=0;
         this.kdamCourses=kdamCourses;
+        this.studsReg=studsReg;
     }
 
     public String getCourseName() {
@@ -37,5 +41,9 @@ public class Course {
     public void unRegStudent ()
     {
         currStudents--;
+    }
+
+    public LinkedList<String> getStudsReg() {
+        return studsReg;
     }
 }
