@@ -19,19 +19,19 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
         //notice that the top 128 ascii characters have the same representation as their utf-8 counterparts
         //this allow us to do the following comparison
 
-        if (opCounter==2)
-        {
-            info.putIfAbsent("op",bytesToShort(bytes));
-        }
+//        if (opCounter==2)
+//        {
+//            info.putIfAbsent("op",bytesToShort(bytes));
+//        }
 
-        else if (opCounter > 2 && (Integer.parseInt(info.get("op")))<4)
+        if (opCounter > 2 && (Integer.parseInt(info.get("op")))<4)
         {
             OPMessage ans;
-            if (nextByte == '0' && userInfoCounter==0) {
+            if (nextByte == '\0' && userInfoCounter==0) {
                 info.putIfAbsent("userName",popString());
                 userInfoCounter++;
             }
-            else if(nextByte == '0'&& userInfoCounter==1){
+            else if(nextByte == '\0'&& userInfoCounter==1){
                 info.putIfAbsent("password",popString());
                 switch (info.get("op")) {
                     case "1":
@@ -45,23 +45,27 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
                         break;
                 }
                 userInfoCounter = 0;
+                System.out.println(info.get("op")+" "+info.get("userName")+" "+info.get("password"));
                 info.clear();
+                opCounter=0;
                 return ans;
             }
         }
 
         else if (opCounter > 2 && (info.get("op").equals("8"))) {
             OPMessage ans;
-            if (nextByte == '0') {
+            if (nextByte == '\0') {
                 info.putIfAbsent("studentUsername", popString());
                 ans = new OP8PrintStudStatMessage(Integer.parseInt(info.get("op")), info.get("studentUsername"));
                 info.clear();
+                opCounter=0;
                 return ans;
             }
         }
         else if(opCounter > 2 && (Integer.parseInt(info.get("op"))>4 && Integer.parseInt(info.get("op"))<=10)){
             OPMessage ans;
-            if (len==2) {
+            if (len==1) {
+                pushByte(nextByte);
                 info.putIfAbsent("courseNumber", bytesToShort(bytes));
                 switch (info.get("op")) {
                     case "5":
@@ -80,23 +84,32 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
                         ans = new OP10UnregCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
                         break;
                 }
+                System.out.println(info.get("op")+" "+Integer.parseInt(info.get("courseNumber")));
                 info.clear();
+                opCounter=0;
                 return ans;
             }
         }
-        else if (opCounter>2){
+        pushByte(nextByte);
+        if (opCounter==2){
+            info.putIfAbsent("op",bytesToShort(bytes));
             OPMessage ans;
             if (info.get("op").equals("4")) {
                 ans = new OP4LogoutMessage(Integer.parseInt(info.get("op")));
+                info.clear();
+                opCounter=0;
+                return ans;
             }
-            else  {
+            else if (info.get("op").equals("11")) {
                 ans = new OP11CheckMyCurrCoursesMessage(Integer.parseInt(info.get("op")));
+                info.clear();
+                opCounter=0;
+                return ans;
+
             }
-            info.clear();
-            return ans;
         }
 
-        pushByte(nextByte);
+
         return null; //not a line yet
 
 //        if (nextByte == '\n') {
@@ -106,7 +119,7 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
 
     @Override
     public byte[] encode(OPMessage message) {
-        return (message.toString() + "\n").getBytes(); //uses utf8 by default
+        return (message.toString() ).getBytes(); //uses utf8 by default
     }
 
     private void pushByte(byte nextByte) {

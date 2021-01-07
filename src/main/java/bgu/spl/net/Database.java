@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.LinkedList;
 import java.util.Scanner;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
@@ -18,11 +19,14 @@ import java.util.concurrent.ConcurrentLinkedQueue;
 public class Database {
 	private ConcurrentHashMap<String, User> usersInfo;
 	private ConcurrentHashMap<Integer,Course> coursesInfo;
+	private Vector<Integer> courseOrder;
 
 	//to prevent user from creating new bgu.spl.net.Database
 	private Database() {
 		this.usersInfo=new ConcurrentHashMap<>();
 		this.coursesInfo=new ConcurrentHashMap<>();
+		this.courseOrder = new Vector<>();
+
 	}
 
 
@@ -47,15 +51,18 @@ public class Database {
 			Scanner myReader = new Scanner(myObj);
 			while (myReader.hasNextLine()) {
 				String courseData = myReader.nextLine();
-				String[] courseMembers=courseData.split("|");
-				String [] kdamArray=courseMembers[2].substring(1,(courseMembers[2].length()-1)).split(",");
-				LinkedList<Integer> kdamList=new LinkedList<>();
-				ConcurrentLinkedQueue<String> studsReg =new ConcurrentLinkedQueue<>();
-				for (int i = 0; i < kdamArray.length; i++) {
-					kdamList.add(Integer.parseInt(kdamArray[i]));
+				String[] courseMembers = courseData.split("\\|");
+				String[] kdamArray = courseMembers[2].substring(1, (courseMembers[2].length() - 1)).split(",");
+				LinkedList<Integer> kdamList = new LinkedList<>();
+				ConcurrentLinkedQueue<String> studsReg = new ConcurrentLinkedQueue<>();
+				if (!(kdamArray[0].length()==0)) {
+					for (int i = 0; i < kdamArray.length; i++) {
+						kdamList.add(Integer.parseInt(kdamArray[i]));
+					}
 				}
-				Course c=new Course(courseMembers[1],Integer.parseInt(courseMembers[3]),kdamList,studsReg);
-				coursesInfo.putIfAbsent(Integer.parseInt(courseMembers[0]),c);
+				Course c = new Course(courseMembers[1], Integer.parseInt(courseMembers[3]), kdamList, studsReg);
+				coursesInfo.putIfAbsent(Integer.parseInt(courseMembers[0]), c);
+				courseOrder.add(Integer.parseInt(courseMembers[0]));
 			}
 			myReader.close();
 			return true;
@@ -74,4 +81,7 @@ public class Database {
 		return coursesInfo;
 	}
 
+	public Vector<Integer> getCourseOrder() {
+		return courseOrder;
+	}
 }

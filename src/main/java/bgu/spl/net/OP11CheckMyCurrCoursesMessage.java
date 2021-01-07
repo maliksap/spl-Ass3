@@ -22,6 +22,7 @@ public class OP11CheckMyCurrCoursesMessage implements OPMessage {
             return new OP13ErrMessage(13, (short) 10);
         }
         User u = database.getUsersInfo().get(loggedInUser);
+        u.getRegisteredCourses().sort((Integer c1, Integer c2)->database.getCourseOrder().indexOf(c1)-database.getCourseOrder().indexOf(c2));
         String myCourses = Arrays.toString(u.getRegisteredCourses().toArray());
         return new OP12AckMessage(12, (short) 11,myCourses);
     }

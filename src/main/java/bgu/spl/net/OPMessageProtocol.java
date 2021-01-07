@@ -16,7 +16,7 @@ public class OPMessageProtocol implements MessagingProtocol<OPMessage> {
             shouldTerminate = true;
         }
         OPMessage ans = msg.react(loggedInUser);
-        this.loggedInUser= ans.getLoggedInUser();
+        this.loggedInUser= msg.getLoggedInUser();
         return ans;
     }
 

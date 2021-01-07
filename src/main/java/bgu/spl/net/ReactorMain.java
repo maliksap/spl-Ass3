@@ -15,7 +15,7 @@ public class ReactorMain {
                 Integer.decode(args[1]).intValue(),  //port
                 () -> new OPMessageProtocol(),
                 () -> new OPMessageEncoderDecoder());
-        Database.getInstance().initialize(args[2]);
+        Database.getInstance().initialize(args[0]);
         server.serve();
     }
 

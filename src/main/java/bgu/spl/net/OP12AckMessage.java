@@ -14,7 +14,10 @@ public class OP12AckMessage implements OPMessage {
 
     @Override
     public String toString() {
-        return "ACK " + otherOp +"\n" + optional;
+        if(optional.equals("")){
+            return "ACK " + otherOp +"\n";
+        }
+        return "ACK " + otherOp +"\n" + optional +"\n";
     }
 
     @Override

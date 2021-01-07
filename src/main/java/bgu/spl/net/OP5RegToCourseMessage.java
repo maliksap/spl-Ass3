@@ -20,7 +20,7 @@ public class OP5RegToCourseMessage implements OPMessage {
         if (database.getUsersInfo().get(loggedInUser).isAdmin()) {
             return new OP13ErrMessage(13, (short) 5);
         }
-        if (database.getCoursesInfo().containsKey(courseNum)) {
+        if (!(database.getCoursesInfo().containsKey(courseNum))) {
             return new OP13ErrMessage(13, (short) 5);
         }
         if (database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum)
@@ -33,7 +33,7 @@ public class OP5RegToCourseMessage implements OPMessage {
             }
         }
         synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
-            if (database.getCoursesInfo().get(courseNum).getCurrStudents() >= database.getCoursesInfo().get(courseNum).getCurrStudents()) {
+            if (database.getCoursesInfo().get(courseNum).getCurrStudents() >= database.getCoursesInfo().get(courseNum).getMaxStudents()) {
                 return new OP13ErrMessage(13, (short) 5);
             }
             database.getUsersInfo().get(loggedInUser).getRegisteredCourses().add(courseNum);

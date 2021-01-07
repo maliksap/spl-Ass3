@@ -13,7 +13,7 @@ public class OP13ErrMessage implements OPMessage {
 
     @Override
     public String toString() {
-        return "ERROR " + otherOp;
+        return "ERROR " + otherOp + "\n";
     }
 
     @Override
