@@ -45,7 +45,7 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
                         break;
                 }
                 userInfoCounter = 0;
-                System.out.println(info.get("op")+" "+info.get("userName")+" "+info.get("password"));
+//                System.out.println(info.get("op")+" "+info.get("userName")+" "+info.get("password"));
                 info.clear();
                 opCounter=0;
                 return ans;
@@ -84,7 +84,7 @@ public class OPMessageEncoderDecoder implements MessageEncoderDecoder<OPMessage>
                         ans = new OP10UnregCourseMessage(Integer.parseInt(info.get("op")), Integer.parseInt(info.get("courseNumber")));
                         break;
                 }
-                System.out.println(info.get("op")+" "+Integer.parseInt(info.get("courseNumber")));
+//                System.out.println(info.get("op")+" "+Integer.parseInt(info.get("courseNumber")));
                 info.clear();
                 opCounter=0;
                 return ans;

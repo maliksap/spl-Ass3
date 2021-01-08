@@ -17,7 +17,7 @@ public class OP3LoginRequestMessage implements OPMessage {
     public OPMessage react(String s) {
         this.loggedInUser = s;
         Database database = Database.getInstance();
-        System.out.println(loggedInUser);
+//        System.out.println(loggedInUser);
         if (!(database.getUsersInfo().containsKey(username))) {
             return new OP13ErrMessage(13, (short) 3);
         }

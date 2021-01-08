@@ -20,7 +20,7 @@ public class OP6CheckKdamCourseMessage implements OPMessage {
         if (loggedInUser == null) {
             return new OP13ErrMessage(13, (short) 6);
         }
-        if (database.getCoursesInfo().containsKey(courseNum)){
+        if (!(database.getCoursesInfo().containsKey(courseNum))){
             return new OP13ErrMessage(13, (short) 6);
         }
         String kdamCurses = Arrays.toString(database.getCoursesInfo().get(courseNum).getKdamCourses().toArray());

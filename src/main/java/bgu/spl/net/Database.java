@@ -45,7 +45,7 @@ public class Database {
 	 * loades the courses from the file path specified 
 	 * into the bgu.spl.net.Database, returns true if successful.
 	 */
-	boolean initialize(String coursesFilePath) {
+	public boolean initialize(String coursesFilePath) {
 		try {
 			File myObj = new File(coursesFilePath);
 			Scanner myReader = new Scanner(myObj);
@@ -54,7 +54,7 @@ public class Database {
 				String[] courseMembers = courseData.split("\\|");
 				String[] kdamArray = courseMembers[2].substring(1, (courseMembers[2].length() - 1)).split(",");
 				LinkedList<Integer> kdamList = new LinkedList<>();
-				ConcurrentLinkedQueue<String> studsReg = new ConcurrentLinkedQueue<>();
+				Vector<String> studsReg = new Vector<>();
 				if (!(kdamArray[0].length()==0)) {
 					for (int i = 0; i < kdamArray.length; i++) {
 						kdamList.add(Integer.parseInt(kdamArray[i]));
@@ -84,4 +84,6 @@ public class Database {
 	public Vector<Integer> getCourseOrder() {
 		return courseOrder;
 	}
+
+
 }

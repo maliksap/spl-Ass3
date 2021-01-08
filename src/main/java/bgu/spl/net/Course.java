@@ -1,6 +1,7 @@
 package bgu.spl.net;
 
 import java.util.LinkedList;
+import java.util.Vector;
 import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class Course {
@@ -8,9 +9,9 @@ public class Course {
     private int maxStudents;
     private Integer currStudents;
     private LinkedList<Integer> kdamCourses;
-    private ConcurrentLinkedQueue<String> studsReg;
+    private Vector<String> studsReg;
 
-    public Course (String courseName, int maxStudents,LinkedList<Integer> kdamCourses, ConcurrentLinkedQueue<String> studsReg )
+    public Course (String courseName, int maxStudents,LinkedList<Integer> kdamCourses, Vector<String> studsReg )
     {
         this.courseName=courseName;
         this.maxStudents=maxStudents;
@@ -44,7 +45,7 @@ public class Course {
         currStudents--;
     }
 
-    public ConcurrentLinkedQueue<String> getStudsReg() {
+    public Vector<String> getStudsReg() {
         return studsReg;
     }
 }

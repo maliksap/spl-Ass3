@@ -16,6 +16,9 @@ public class OP2StudentRegMessage implements OPMessage {
     public OPMessage react(String s) {
         loggedInUser = s;
         Database database = Database.getInstance();
+        if (loggedInUser != null) {
+            return new OP13ErrMessage(13, (short) 2);
+        }
         synchronized (database.getUsersInfo()) {
             if (database.getUsersInfo().containsKey(username)) {
                 return new OP13ErrMessage(13, (short) 2);

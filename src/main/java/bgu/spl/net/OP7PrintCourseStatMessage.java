@@ -1,6 +1,8 @@
 package bgu.spl.net;
 
 import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
 
 public class OP7PrintCourseStatMessage implements OPMessage {
     private int opcode;
@@ -27,10 +29,22 @@ public class OP7PrintCourseStatMessage implements OPMessage {
         }
         synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
             Course c = database.getCoursesInfo().get(courseNum);
-            String studReg = Arrays.toString(c.getStudsReg().toArray());
-            String stat = "Course:(" + courseNum + ")" + c.getCourseName() + "\n"
-                    + "Seats Available:" + c.getCurrStudents() + "/"
-                    + c.getMaxStudents() + "\n" + "Student Registered:" + studReg;
+            Collections.sort(c.getStudsReg());
+            String studReg = "[";
+            for  (int j =0; j<c.getStudsReg().size() ; j++) {
+                    studReg=studReg+c.getStudsReg().get(j) +",";
+                }
+            if (studReg.length()==1){
+                String stat = "Course: (" + courseNum + ") " + c.getCourseName() + "\n"
+                        + "Seats Available: " +(c.getMaxStudents()-c.getCurrStudents()) + "/"
+                        + c.getMaxStudents() + "\n" + "Students Registered: " + "[]";
+                return new OP12AckMessage(12, (short) 7, stat);
+            }
+            studReg=studReg.substring(0,studReg.length()-1);
+            studReg=studReg+"]";
+            String stat = "Course: (" + courseNum + ") " + c.getCourseName() + "\n"
+                    + "Seats Available: " +(c.getMaxStudents()-c.getCurrStudents()) + "/"
+                    + c.getMaxStudents() + "\n" + "Students Registered: " + studReg;
             return new OP12AckMessage(12, (short) 7, stat);
         }
     }

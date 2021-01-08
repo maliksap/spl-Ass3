@@ -30,8 +30,8 @@ public class OP10UnregCourseMessage implements OPMessage {
             return new OP13ErrMessage(13, (short) 10);
         }
         synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
-            database.getUsersInfo().get(loggedInUser).getRegisteredCourses().remove(courseNum);
-            database.getCoursesInfo().get(courseNum).getStudsReg().remove(loggedInUser);
+            database.getUsersInfo().get(loggedInUser).getRegisteredCourses().removeElement(courseNum);
+            database.getCoursesInfo().get(courseNum).getStudsReg().removeElement(loggedInUser);
             database.getCoursesInfo().get(courseNum).unRegStudent();
         }
         return new OP12AckMessage(12, (short) 10,"");

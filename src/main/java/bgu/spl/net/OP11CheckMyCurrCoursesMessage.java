@@ -23,7 +23,16 @@ public class OP11CheckMyCurrCoursesMessage implements OPMessage {
         }
         User u = database.getUsersInfo().get(loggedInUser);
         u.getRegisteredCourses().sort((Integer c1, Integer c2)->database.getCourseOrder().indexOf(c1)-database.getCourseOrder().indexOf(c2));
-        String myCourses = Arrays.toString(u.getRegisteredCourses().toArray());
+        String myCourses = "[";
+        for  (int j =0; j<u.getRegisteredCourses().size() ; j++) {
+            myCourses=myCourses+u.getRegisteredCourses().get(j) +",";
+        }
+        if (myCourses.length()==1){
+            return new OP12AckMessage(12, (short) 11,"[]");
+        }
+        myCourses=myCourses.substring(0,myCourses.length()-1);
+        myCourses=myCourses+"]";
+//        String myCourses = Arrays.toString(u.getRegisteredCourses().toArray());
         return new OP12AckMessage(12, (short) 11,myCourses);
     }
 
