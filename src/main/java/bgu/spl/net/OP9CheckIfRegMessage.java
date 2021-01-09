@@ -24,8 +24,10 @@ public class OP9CheckIfRegMessage implements OPMessage {
             return new OP13ErrMessage(13, (short) 9);
         }
         String reg = "NOT REGISTERED";
-        if (database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum)){
-            reg = "REGISTERED";
+        synchronized (database.getUsersInfo().get(loggedInUser).getRegisteredCourses()) {
+            if (database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum)) {
+                reg = "REGISTERED";
+            }
         }
         return new OP12AckMessage(12, (short) 9,reg);
     }

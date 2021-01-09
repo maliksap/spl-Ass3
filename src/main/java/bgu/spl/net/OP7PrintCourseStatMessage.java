@@ -27,7 +27,7 @@ public class OP7PrintCourseStatMessage implements OPMessage {
         if (!(database.getCoursesInfo().containsKey(courseNum))){
             return new OP13ErrMessage(13, (short) 7);
         }
-        synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
+        synchronized (database.getCoursesInfo().get(courseNum)) {
             Course c = database.getCoursesInfo().get(courseNum);
             Collections.sort(c.getStudsReg());
             String studReg = "[";

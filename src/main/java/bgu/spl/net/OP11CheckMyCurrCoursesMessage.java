@@ -18,22 +18,24 @@ public class OP11CheckMyCurrCoursesMessage implements OPMessage {
         if (loggedInUser == null) {
             return new OP13ErrMessage(13, (short) 10);
         }
-        if (database.getUsersInfo().get(loggedInUser).isAdmin()){
+        if (database.getUsersInfo().get(loggedInUser).isAdmin()) {
             return new OP13ErrMessage(13, (short) 10);
         }
-        User u = database.getUsersInfo().get(loggedInUser);
-        u.getRegisteredCourses().sort((Integer c1, Integer c2)->database.getCourseOrder().indexOf(c1)-database.getCourseOrder().indexOf(c2));
-        String myCourses = "[";
-        for  (int j =0; j<u.getRegisteredCourses().size() ; j++) {
-            myCourses=myCourses+u.getRegisteredCourses().get(j) +",";
-        }
-        if (myCourses.length()==1){
-            return new OP12AckMessage(12, (short) 11,"[]");
-        }
-        myCourses=myCourses.substring(0,myCourses.length()-1);
-        myCourses=myCourses+"]";
+        synchronized (database.getUsersInfo().get(loggedInUser).getRegisteredCourses()) {
+            User u = database.getUsersInfo().get(loggedInUser);
+            u.getRegisteredCourses().sort((Integer c1, Integer c2) -> database.getCourseOrder().indexOf(c1) - database.getCourseOrder().indexOf(c2));
+            String myCourses = "[";
+            for (int j = 0; j < u.getRegisteredCourses().size(); j++) {
+                myCourses = myCourses + u.getRegisteredCourses().get(j) + ",";
+            }
+            if (myCourses.length() == 1) {
+                return new OP12AckMessage(12, (short) 11, "[]");
+            }
+            myCourses = myCourses.substring(0, myCourses.length() - 1);
+            myCourses = myCourses + "]";
 //        String myCourses = Arrays.toString(u.getRegisteredCourses().toArray());
-        return new OP12AckMessage(12, (short) 11,myCourses);
+            return new OP12AckMessage(12, (short) 11, myCourses);
+        }
     }
 
     @Override

@@ -1,5 +1,9 @@
 101|Algebra1|[]|5
 102|Infi1|[]|5
+-40|Discrrrrrrete|[]|5
+3|Algebbbra1|[0]|5
+0|SPALGO|[-40]|5
+12|Infiiiiiiiii1|[]|5
 103|Discrete|[]|5
 111|CS-intro|[]|5
 201|Algebra2|[101]|5

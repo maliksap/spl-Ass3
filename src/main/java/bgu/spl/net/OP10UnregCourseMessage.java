@@ -23,16 +23,20 @@ public class OP10UnregCourseMessage implements OPMessage {
         if (!(database.getCoursesInfo().containsKey(courseNum))) {
             return new OP13ErrMessage(13, (short) 10);
         }
-        if(!(database.getCoursesInfo().get(courseNum).getStudsReg().contains(loggedInUser))){
-            return new OP13ErrMessage(13, (short) 10);
-        }
-        if(!(database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum))){
-            return new OP13ErrMessage(13, (short) 10);
-        }
-        synchronized (database.getCoursesInfo().get(courseNum).getCurrStudents()) {
-            database.getUsersInfo().get(loggedInUser).getRegisteredCourses().removeElement(courseNum);
-            database.getCoursesInfo().get(courseNum).getStudsReg().removeElement(loggedInUser);
-            database.getCoursesInfo().get(courseNum).unRegStudent();
+        synchronized (database.getUsersInfo().get(loggedInUser).getRegisteredCourses()) {
+            synchronized (database.getCoursesInfo().get(courseNum)) {
+                if (!(database.getCoursesInfo().get(courseNum).getStudsReg().contains(loggedInUser))) {
+                    return new OP13ErrMessage(13, (short) 10);
+                }
+
+                if (!(database.getUsersInfo().get(loggedInUser).getRegisteredCourses().contains(courseNum))) {
+                    return new OP13ErrMessage(13, (short) 10);
+                }
+
+                database.getUsersInfo().get(loggedInUser).getRegisteredCourses().removeElement(courseNum);
+                database.getCoursesInfo().get(courseNum).getStudsReg().removeElement(loggedInUser);
+                database.getCoursesInfo().get(courseNum).unRegStudent();
+            }
         }
         return new OP12AckMessage(12, (short) 10,"");
     }
